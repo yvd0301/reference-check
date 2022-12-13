@@ -1,0 +1,20 @@
+name: ci
+on:
+  push:
+    branches:
+      - main
+jobs:
+  run-test-code:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+      - run: |
+          touch .env
+          touch user/.env
+          echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> .env
+          echo CI_TEST_PASS=${{ secrets.CI_TEST_PASS }} >> user/.env
+          pip install -r requirements.txt
+          pytest
